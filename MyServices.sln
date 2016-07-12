@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyServices.Shared", "MyServices.Shared.csproj", "{AAC8A34A-CFFE-41D0-8D93-EC5E22BB4309}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyServices.Shared", "MyServices\MyServices.Shared.csproj", "{AAC8A34A-CFFE-41D0-8D93-EC5E22BB4309}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyServices.ServiceWorker", "..\ServiceWorker\MyServices.ServiceWorker.csproj", "{16B95475-5CB6-46F0-B87F-16E6F1625436}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyServices.ServiceWorker", "ServiceWorker\MyServices.ServiceWorker.csproj", "{16B95475-5CB6-46F0-B87F-16E6F1625436}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyServices.ServiceWorker2", "..\ServiceWorker2\MyServices.ServiceWorker2.csproj", "{E5015685-2B61-45A1-9256-62BADDB8C182}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyServices.ServiceWorker2", "ServiceWorker2\MyServices.ServiceWorker2.csproj", "{E5015685-2B61-45A1-9256-62BADDB8C182}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lighthouse", "..\Lighthouse\Lighthouse.csproj", "{87BE1ABF-1F59-41AB-A3CB-4B1E7E0B218A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lighthouse", "Lighthouse\Lighthouse.csproj", "{87BE1ABF-1F59-41AB-A3CB-4B1E7E0B218A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lighthouse2", "..\Lighthouse2\Lighthouse2.csproj", "{87AD5457-4E14-418A-A6B5-74B07706E4F5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lighthouse2", "Lighthouse2\Lighthouse2.csproj", "{87AD5457-4E14-418A-A6B5-74B07706E4F5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
