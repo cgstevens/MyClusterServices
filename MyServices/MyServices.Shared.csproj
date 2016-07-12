@@ -106,9 +106,11 @@
     <Compile Include="Actors\JobManager.cs" />
     <Compile Include="Actors\ActorMonitor.cs" />
     <Compile Include="Actors\ActorSystemFactory.cs" />
+    <Compile Include="Actors\Worker.cs" />
     <Compile Include="Helpers\AppSettings.cs" />
     <Compile Include="Helpers\StaticMethods.cs" />
     <Compile Include="Logger\Log4NetLogger.cs" />
+    <Compile Include="Messages\FindAvailableWorkers.cs" />
     <Compile Include="Messages\MonkeyDo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
