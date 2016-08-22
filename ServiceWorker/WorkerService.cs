@@ -28,7 +28,7 @@ namespace MyServices.ServiceWorker
             Program.ClusterHelper.Tell(new ClusterHelper.RemoveMember());
             Thread.Sleep(5000); // Give the Remove time to actually remove...
 
-            Program.CLusterSystem.Terminate();
+            Program.ClusterSystem.Terminate();
             Thread.Sleep(2000); // Give time for actor system to terminate. 
             Console.WriteLine("Cleanup complete");
             return true;
@@ -36,22 +36,17 @@ namespace MyServices.ServiceWorker
 
         public void InitializeClusterSystem()
         {
-            Program.CLusterSystem = ActorSystemFactory.LaunchClusterManager();
+            Program.ClusterSystem = ActorSystemFactory.LaunchClusterManager();
             
             GlobalContext.Properties["ipaddress"] = AppSettings.GetIpAddressFromConfig();
 
-            Program.ClusterHelper = Program.CLusterSystem.ActorOf(Props.Create(() => new ClusterHelper()), ActorPaths.ClusterHelperActor.Name);
+            Program.ClusterHelper = Program.ClusterSystem.ActorOf(Props.Create(() => new ClusterHelper()), ActorPaths.ClusterHelperActor.Name);
 
-            Program.CLusterSystem.ActorOf(ClusterSingletonManager.Props(
+            Program.ClusterSystem.ActorOf(ClusterSingletonManager.Props(
                 singletonProps: Props.Create(() => new JobManager()),         // Props used to create actor singleton
                 terminationMessage: PoisonPill.Instance,                  // message used to stop actor gracefully
-                settings: ClusterSingletonManagerSettings.Create(Program.CLusterSystem).WithRole("worker")),// cluster singleton manager settings
+                settings: ClusterSingletonManagerSettings.Create(Program.ClusterSystem).WithRole("worker")),// cluster singleton manager settings
                 name: "jobmanager");
-
-            Program.CLusterSystem.ActorOf(ClusterSingletonProxy.Props(
-                singletonManagerPath: "/user/jobmanager",
-                settings: ClusterSingletonProxySettings.Create(Program.CLusterSystem).WithRole("worker")),
-                name: "managerProxy");
         }
 
     }

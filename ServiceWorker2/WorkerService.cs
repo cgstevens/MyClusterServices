@@ -47,11 +47,6 @@ namespace MyServices.ServiceWorker2
                 terminationMessage: PoisonPill.Instance,                  // message used to stop actor gracefully
                 settings: ClusterSingletonManagerSettings.Create(Program.ClusterSystem).WithRole("worker")),// cluster singleton manager settings
                 name: "jobmanager");
-
-            Program.ClusterSystem.ActorOf(ClusterSingletonProxy.Props(
-                singletonManagerPath: "/user/jobmanager",
-                settings: ClusterSingletonProxySettings.Create(Program.ClusterSystem).WithRole("worker")),
-                name: "managerProxy");
         }
 
     }

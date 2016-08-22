@@ -7,10 +7,11 @@ using Akka.Event;
 using Akka.Monitoring;
 using Akka.Routing;
 using MyServices.Shared.Messages;
+using Akka.Cluster.Tools.Singleton;
 
 namespace MyServices.Shared.Actors
 {
-    public class JobManager : ReceiveActor
+    public class JobManager : ReceiveActor, IWithUnboundedStash
     {
         private readonly ILoggingAdapter _logger;
         private IActorRef _workerRouter;
@@ -42,13 +43,21 @@ namespace MyServices.Shared.Actors
         {
             Become(Ready);
             _logger.Info("JobMaster is becoming ready.");
+
+            var proxy = Context.ActorOf(ClusterSingletonProxy.Props(
+                singletonManagerPath: "/user/jobmanager",
+                settings: ClusterSingletonProxySettings.Create(Context.System).WithRole("worker")),
+                name: "managerProxy");
+
             _workerRouter = Context.ActorOf(new ClusterRouterPool(
                 local: new RandomPool(1), 
                 settings: new ClusterRouterPoolSettings(30, 1, true, "worker")
-                ).Props(Props.Create(() => new Worker())));
+                ).Props(Props.Create(() => new Worker(proxy))));
 
             _monkeyTeller = Context.System.Scheduler.ScheduleTellRepeatedlyCancelable(TimeSpan.FromSeconds(1),
                     TimeSpan.FromSeconds(1), Self, new MonkeyDo(), Self);
+
+            Context.ActorOf(Props.Create(() => new JobTasker()), "jobtasker");
 
             _counter = 0;
         }
@@ -84,11 +93,18 @@ namespace MyServices.Shared.Actors
 
         public void SearchingForJob()
         {
+
+            Receive<MonkeyDo>(ic =>
+            {
+                Stash.Stash();
+            });
+
             Receive<FindAvailableWorkers>(ic =>
             {
                 if (ic.NodeCount == 0)
                 {
                     // We dind't find any routees
+                    Stash.UnstashAll();
                     Become(Ready);
                     _logger.Warning("Did not find any available workers");
                     return;
@@ -97,8 +113,16 @@ namespace MyServices.Shared.Actors
                 _counter++;
                 _logger.Info("Monkey Create Work Item : {0}", _counter);
                 _workerRouter.Tell(new MonkeyDoWork(_counter));
+            });
+
+            Receive<FoundWorker>(ic =>
+            {
+                _logger.Info("Monkey Manager Found Worker to complete work item: {0}, {1}", ic.WorkItem, ic.WorkerRef.ToString());
+                Stash.UnstashAll();
                 Become(Ready);
             });
+
+
 
             ReceiveAny(task =>
             {
@@ -106,5 +130,6 @@ namespace MyServices.Shared.Actors
             });
         }
 
+        public IStash Stash { get; set; }
     }
 }

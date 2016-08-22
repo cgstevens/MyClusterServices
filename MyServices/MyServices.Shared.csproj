@@ -39,6 +39,10 @@
       <HintPath>packages\Akka.Cluster.1.1.0\lib\net45\Akka.Cluster.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Akka.Cluster.Tools, Version=1.1.0.26, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Akka.Cluster.Tools.1.1.0.26-beta\lib\net45\Akka.Cluster.Tools.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Akka.Monitoring, Version=0.5.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\Akka.Monitoring.0.5.3\lib\net45\Akka.Monitoring.dll</HintPath>
       <Private>True</Private>
@@ -103,6 +107,7 @@
   <ItemGroup>
     <Compile Include="ActorPaths.cs" />
     <Compile Include="Actors\ClusterHelper.cs" />
+    <Compile Include="Actors\JobTasker.cs" />
     <Compile Include="Actors\JobManager.cs" />
     <Compile Include="Actors\ActorMonitor.cs" />
     <Compile Include="Actors\ActorSystemFactory.cs" />
@@ -110,6 +115,7 @@
     <Compile Include="Helpers\AppSettings.cs" />
     <Compile Include="Helpers\StaticMethods.cs" />
     <Compile Include="Logger\Log4NetLogger.cs" />
+    <Compile Include="Messages\FoundWorker.cs" />
     <Compile Include="Messages\FindAvailableWorkers.cs" />
     <Compile Include="Messages\MonkeyDo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

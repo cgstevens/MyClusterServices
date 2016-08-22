@@ -23,7 +23,7 @@ namespace MyServices.ServiceWorker
     class Program
     {
         static bool exitSystem = false;
-        public static ActorSystem CLusterSystem { get; set; }
+        public static ActorSystem ClusterSystem;
         public static IActorRef ClusterHelper;
         private static PerformanceCollectorModule perfCollectorModule;
         public static string AkkaHostIpAddress { get; set; }
@@ -52,7 +52,7 @@ namespace MyServices.ServiceWorker
             ClusterHelper.Tell(new ClusterHelper.RemoveMember());
             Thread.Sleep(5000); // Give the Remove time to actually remove...
 
-            CLusterSystem.Terminate();
+            ClusterSystem.Terminate();
             Thread.Sleep(2000); // Give time for actor system to terminate. 
             Console.WriteLine("Cleanup complete");
 
@@ -87,7 +87,7 @@ namespace MyServices.ServiceWorker
             {
                 hostConfiguratior.UseAssemblyInfoForServiceInfo();
                 hostConfiguratior.SetServiceName(serviceName);
-                hostConfiguratior.SetDisplayName(serviceName);
+                hostConfiguratior.SetDisplayName(serviceName + " " + AppSettings.GetIpAddressFromConfig());
                 hostConfiguratior.SetDescription("Commissions Messaging - " + serviceName);
                 hostConfiguratior.DependsOnEventLog();
                 hostConfiguratior.UseLog4Net();

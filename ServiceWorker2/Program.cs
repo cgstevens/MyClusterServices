@@ -20,7 +20,7 @@ namespace MyServices.ServiceWorker2
     class Program
     {
         static bool exitSystem = false;
-        public static ActorSystem ClusterSystem { get; set; }
+        public static ActorSystem ClusterSystem;
         public static IActorRef ClusterHelper;
         private static PerformanceCollectorModule perfCollectorModule;
         public static string AkkaHostIpAddress { get; set; }
@@ -83,7 +83,7 @@ namespace MyServices.ServiceWorker2
             {
                 hostConfiguratior.UseAssemblyInfoForServiceInfo();
                 hostConfiguratior.SetServiceName(serviceName);
-                hostConfiguratior.SetDisplayName(serviceName);
+                hostConfiguratior.SetDisplayName(serviceName + " " +AppSettings.GetIpAddressFromConfig());
                 hostConfiguratior.SetDescription("Commissions Messaging - " + serviceName);
                 hostConfiguratior.DependsOnEventLog();
                 hostConfiguratior.UseLog4Net();

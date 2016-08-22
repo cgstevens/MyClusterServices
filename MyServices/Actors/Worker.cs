@@ -15,15 +15,20 @@ namespace MyServices.Shared.Actors
     public class Worker : ReceiveActor
     {
         private readonly ILoggingAdapter _logger;
+        private readonly IActorRef _jobManagerProxyRef;
 
-        public Worker()
+        public Worker(IActorRef jobManagerProxyRef)
         {
             _logger = Context.GetLogger();
+            _jobManagerProxyRef = jobManagerProxyRef;
 
             Receive<MonkeyDoWork>(work =>
             {
                 _logger.Info("Monkey Doing Work : {0}", work.WorkItem);
-                
+
+                _jobManagerProxyRef.Tell(new FoundWorker(work.WorkItem, Self));
+
+
             });
         }
     }
