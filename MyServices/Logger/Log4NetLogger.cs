@@ -3,8 +3,6 @@ using System.Text.RegularExpressions;
 using Akka.Actor;
 using Akka.Event;
 using log4net;
-using Microsoft.ApplicationInsights;
-using MyServices.Shared.Helpers;
 using Log4Net = log4net.ILog;
 
 namespace MyServices.Shared.Logger

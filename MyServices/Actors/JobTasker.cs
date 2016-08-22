@@ -1,11 +1,6 @@
 using System;
-using System.Linq;
-using System.Threading.Tasks;
 using Akka.Actor;
-using Akka.Cluster.Routing;
 using Akka.Event;
-using Akka.Monitoring;
-using Akka.Routing;
 using MyServices.Shared.Messages;
 
 namespace MyServices.Shared.Actors

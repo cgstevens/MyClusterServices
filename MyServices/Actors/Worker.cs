@@ -5,7 +5,6 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-using System.Threading;
 using Akka.Actor;
 using Akka.Event;
 using MyServices.Shared.Messages;

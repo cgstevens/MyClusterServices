@@ -8,7 +8,6 @@ using Akka.Actor;
 using log4net;
 using log4net.Appender;
 using log4net.Config;
-using Microsoft.ApplicationInsights.Extensibility.PerfCounterCollector;
 using MyServices.Shared.Helpers;
 using Ninject.Modules;
 using Shared.Actors;
@@ -22,7 +21,6 @@ namespace MyServices.ServiceWorker2
         static bool exitSystem = false;
         public static ActorSystem ClusterSystem;
         public static IActorRef ClusterHelper;
-        private static PerformanceCollectorModule perfCollectorModule;
         public static string AkkaHostIpAddress { get; set; }
 
         #region Trap application termination

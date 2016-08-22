@@ -18,11 +18,11 @@ namespace MyServices.Shared.Actors
             var akkaConfig = section.AkkaConfig;
 
             var injectTcpInfo = string.Format(@"akka.remote.helios.tcp.public-hostname = {0}{1} akka.remote.helios.tcp.hostname = {2}{3} akka.remote.helios.tcp.port = {4}{5}", serverIp, Environment.NewLine, serverIp, Environment.NewLine, serverPort, Environment.NewLine);
-            
+
             var finalConfig = ConfigurationFactory.ParseString(
                 injectTcpInfo)
                 .WithFallback(akkaConfig);
-
+            
             return ActorSystem.Create(ActorPaths.ActorSystem, finalConfig);
         }
 

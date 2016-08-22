@@ -15,6 +15,7 @@ using System;
 using System.Threading;
 using Akka.Actor;
 using MyServices.Shared;
+using MyServices.Shared.Actors;
 using Shared.Actors;
 using Topshelf;
 
@@ -65,7 +66,7 @@ namespace Lighthouse2
 
         public void InitializeCluster()
         {
-            _lighthouseSystem = LighthouseHostFactory.LaunchLighthouse(_ipAddress, _port);
+            _lighthouseSystem = ActorSystemFactory.LaunchClusterManager();
             Program.ClusterSystem = _lighthouseSystem;
             Program.ClusterHelper = Program.ClusterSystem.ActorOf(Props.Create(() => new ClusterHelper()), ActorPaths.ClusterHelperActor.Name);
         }
