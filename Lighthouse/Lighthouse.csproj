@@ -48,7 +48,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Akka.Monitoring, Version=0.5.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\MyServices\packages\Akka.Monitoring.0.5.3\lib\net45\Akka.Monitoring.dll</HintPath>
+      <HintPath>..\packages\Akka.Monitoring.0.5.3\lib\net45\Akka.Monitoring.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Akka.Remote, Version=1.1.0.26, Culture=neutral, processorArchitecture=MSIL">
@@ -72,7 +72,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\MyServices\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -92,11 +92,11 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="Topshelf, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b800c4cfcdeea87b, processorArchitecture=MSIL">
-      <HintPath>..\MyServices\packages\Topshelf.4.0.1\lib\net452\Topshelf.dll</HintPath>
+      <HintPath>..\packages\Topshelf.4.0.1\lib\net452\Topshelf.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Topshelf.Log4Net, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b800c4cfcdeea87b, processorArchitecture=MSIL">
-      <HintPath>..\MyServices\packages\Topshelf.Log4Net.4.0.1\lib\net452\Topshelf.Log4Net.dll</HintPath>
+      <HintPath>..\packages\Topshelf.Log4Net.4.0.1\lib\net452\Topshelf.Log4Net.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Wire, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
