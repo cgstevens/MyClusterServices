@@ -23,47 +23,34 @@ namespace Lighthouse2
 {
     public class LighthouseService : ServiceControl
     {
-        private readonly string _ipAddress;
-        private readonly int? _port;
-
         private ActorSystem _lighthouseSystem;
         private HostControl _hostControl;
-
-        public LighthouseService() : this(null, null)
-        {
-        }
-
-        public LighthouseService(string ipAddress, int? port)
-        {
-            _ipAddress = ipAddress;
-            _port = port;
-        }
-
+        private static readonly ManualResetEvent asTerminatedEvent = new ManualResetEvent(false);
+        
         public bool Start(HostControl hostControl)
         {
             _hostControl = hostControl;
             InitializeCluster();
             return true;
         }
-
-        public bool Restart()
-        {
-            InitializeCluster();
-            return true;
-        }
-
+        
         public bool Stop(HostControl hostControl)
         {
             Program.ClusterHelper.Tell(new ClusterHelper.RemoveMember());
-            Thread.Sleep(5000); // Give the Remove time to actually remove...
 
-            _lighthouseSystem.Terminate();
-            Thread.Sleep(2000); // Give time for actor system to terminate. 
-            Console.WriteLine("Cleanup complete");
+            var cluster = Akka.Cluster.Cluster.Get(Program.ClusterSystem);
+            cluster.RegisterOnMemberRemoved(() => MemberRemoved(Program.ClusterSystem));
+            asTerminatedEvent.WaitOne();
 
             return true;
         }
 
+        private async void MemberRemoved(ActorSystem actorSystem)
+        {
+            await actorSystem.Terminate();
+            asTerminatedEvent.Set();
+            Console.WriteLine("Member Removed");
+        }
         public void InitializeCluster()
         {
             _lighthouseSystem = ActorSystemFactory.LaunchClusterManager();

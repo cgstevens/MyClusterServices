@@ -29,6 +29,7 @@ namespace Lighthouse
     {
         public static ActorSystem ClusterSystem { get; set; }
         public static IActorRef ClusterHelper;
+        public static IActorRef ClusterStatus;
         #region Trap application termination
         [DllImport("Kernel32")]
         private static extern bool SetConsoleCtrlHandler(EventHandler handler, bool add);

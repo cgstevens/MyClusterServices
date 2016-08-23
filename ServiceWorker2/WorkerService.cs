@@ -14,11 +14,12 @@ namespace MyServices.ServiceWorker2
     internal class WorkerService : ServiceControl
     {
         public HostControl _hostControl;
+        private static readonly ManualResetEvent asTerminatedEvent = new ManualResetEvent(false);
 
         public bool Start(HostControl hostControl)
         {
             _hostControl = hostControl;
-            InitializeCommissionsSystem();
+            InitializeClusterSystem();
             return true;
         }
 
@@ -26,15 +27,22 @@ namespace MyServices.ServiceWorker2
         {
             //do your cleanup here
             Program.ClusterHelper.Tell(new ClusterHelper.RemoveMember());
-            Thread.Sleep(5000); // Give the Remove time to actually remove...
 
-            Program.ClusterSystem.Terminate();
-            Thread.Sleep(2000); // Give time for actor system to terminate. 
-            Console.WriteLine("Cleanup complete");
+            var cluster = Akka.Cluster.Cluster.Get(Program.ClusterSystem);
+            cluster.RegisterOnMemberRemoved(() => MemberRemoved(Program.ClusterSystem));
+            asTerminatedEvent.WaitOne();
+
             return true;
         }
 
-        public void InitializeCommissionsSystem()
+        private async void MemberRemoved(ActorSystem actorSystem)
+        {
+            await actorSystem.Terminate();
+            asTerminatedEvent.Set();
+            Console.WriteLine("Member Removed");
+        }
+
+        public void InitializeClusterSystem()
         {
             Program.ClusterSystem = ActorSystemFactory.LaunchClusterManager();
             
