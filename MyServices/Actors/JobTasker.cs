@@ -11,13 +11,15 @@ namespace MyServices.Shared.Actors
         private IActorRef _workerRouter;
         private ICancelable _monkeyTeller;
         private int _counter;
+        private IActorRef _managerRef;
 
-        public JobTasker()
+        public JobTasker(IActorRef managerRef)
         {
+            _managerRef = managerRef;
             _logger = Context.GetLogger();
             BecomeReady();
         }
-
+        
         protected override void PostRestart(Exception reason)
         {
             base.PostRestart(reason);
@@ -38,7 +40,7 @@ namespace MyServices.Shared.Actors
             Become(Ready);
             _logger.Info("JobTasker is becoming ready.");
             _monkeyTeller = Context.System.Scheduler.ScheduleTellRepeatedlyCancelable(TimeSpan.FromSeconds(1),
-                    TimeSpan.FromSeconds(1), Self, new MonkeyDo(), Self);
+                    TimeSpan.FromSeconds(5), Self, new MonkeyDo(), Self);
 
             _counter = 0;
         }
@@ -49,6 +51,7 @@ namespace MyServices.Shared.Actors
             Receive<MonkeyDo>(ic =>
             {
                 _counter++;
+                _managerRef.Tell(new MonkeyDoWork(_counter));
                 _logger.Info("JobTasker tell JobManager something {0}", _counter);
             });
             

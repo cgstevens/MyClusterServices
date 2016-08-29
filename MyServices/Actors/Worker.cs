@@ -23,7 +23,7 @@ namespace MyServices.Shared.Actors
 
             Receive<MonkeyDoWork>(work =>
             {
-                _logger.Info("Monkey Doing Work : {0}", work.WorkItem);
+                _logger.Info("Monkey Completed WorkItem : {0}", work.WorkItem);
 
                 _jobManagerProxyRef.Tell(new FoundWorker(work.WorkItem, Self));
 

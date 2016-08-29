@@ -15,7 +15,7 @@ namespace MyServices.Shared.Actors
         private readonly ILoggingAdapter _logger;
         private IActorRef _workerRouter;
         private ICancelable _monkeyTeller;
-        private int _counter;
+        private int _workItem;
 
         public JobManager()
         {
@@ -52,20 +52,18 @@ namespace MyServices.Shared.Actors
                 local: new RandomPool(1), 
                 settings: new ClusterRouterPoolSettings(30, 1, true, "worker")
                 ).Props(Props.Create(() => new Worker(proxy))));
+            
+            Context.ActorOf(Props.Create(() => new JobTasker(Self)), "jobtasker");
 
-            _monkeyTeller = Context.System.Scheduler.ScheduleTellRepeatedlyCancelable(TimeSpan.FromSeconds(1),
-                    TimeSpan.FromSeconds(1), Self, new MonkeyDo(), Self);
-
-            Context.ActorOf(Props.Create(() => new JobTasker()), "jobtasker");
-
-            _counter = 0;
+            _workItem = 0;
         }
 
 
         public void Ready()
         {
-            Receive<MonkeyDo>(ic =>
+            Receive<MonkeyDoWork>(ic =>
             {
+                _workItem = ic.WorkItem;
                 _workerRouter.Ask<Routees>(new GetRoutees()).ContinueWith(tr =>
                 {
                     if (tr.IsFaulted)
@@ -93,7 +91,7 @@ namespace MyServices.Shared.Actors
         public void SearchingForJob()
         {
 
-            Receive<MonkeyDo>(ic =>
+            Receive<MonkeyDoWork>(ic =>
             {
                 Stash.Stash();
             });
@@ -108,10 +106,9 @@ namespace MyServices.Shared.Actors
                     _logger.Warning("Did not find any available workers");
                     return;
                 }
-
-                _counter++;
-                _logger.Info("Monkey Create Work Item : {0}", _counter);
-                _workerRouter.Tell(new MonkeyDoWork(_counter));
+                
+                _logger.Info("Monkey Create Work Item : {0}", _workItem);
+                _workerRouter.Tell(new MonkeyDoWork(_workItem));
             });
 
             Receive<FoundWorker>(ic =>
