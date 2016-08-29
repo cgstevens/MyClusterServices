@@ -1,5 +1,4 @@
-# MyClusterServices
-Akka.Net Cluster Singleton example.
+# Akka.Net Cluster Singleton example.
 
 The solution contains 4 services; 2 Workers and 2 Lighthouses. 
 You should be able to pull down the solution and run it.
@@ -21,11 +20,60 @@ If you are wondering why I have two lighthouses?  In every project I just have i
 Get the facts from the source...
   http://getakka.net/docs/clustering/cluster-singleton
   
-
+##Example in depth
 In this example you will see that I am creating a Singleton Actor to manage a WorkItem.
 This WorkItem is to be completed on one of the ServiceWorkers.
 
+First we need to configure the Singleton Actor and its Proxy Actor.  The proxy actor will automatically keep track of the actor's current location, update it if necessary and buffer all messages during the handover process. 
+Never use the Singleton IActorRef outside of the Singleton.  You will notice that it will work until your Singleton fails and switches to another node.  When this occurs the Actor with the Singleton IActorRef will now be an invalid address.
 
+###Setup the Singleton 
+  You will want to specify the role when you want to limit actor's singleton context to a nodes having particular role.
+  In this case if it is not specified your singleton could end up on the lighthouse member.
   
+```
+  singleton {
+    singleton-name = "jobmanager"
+    role = ""
+    hand-over-retry-interval = 1s
+  }
+```
+
+###Setup the Singleton Proxy
+```
+singleton-proxy {
+    singleton-name = "jobmanager"
+    role = ""
+    singleton-identification-interval = 2s
+    buffer-size = 100
+  }
+```
+
+###Creating the Singleton Actor
+Here you can see I am creating the Singleton on only members with a role of "worker".
+Remove the .WithRole to see the jobmanager assign work to the the Lighthouse members as well.
+```
+Program.ClusterSystem.ActorOf(ClusterSingletonManager.Props(
+                singletonProps: Props.Create(() => new JobManager()),         // Props used to create actor singleton
+                terminationMessage: PoisonPill.Instance,                  // message used to stop actor gracefully
+                settings: ClusterSingletonManagerSettings.Create(Program.ClusterSystem).WithRole("worker")),// cluster singleton manager settings
+                name: "jobmanager");
+```
+
+###Creating the Proxy
+  Here I am creating my proxy which will track the Singleton on only member with the role of "worker".
+  You could have just the Singleton live on the "worker" member and have the proxy on all members of your cluster.
   
-  
+  **NOTE: I need to verify that this is even correct. Perhaps you shouldn't pass the actor at all.  The proxy should be in the JobWorker.**
+
+```
+var proxy = Context.ActorOf(ClusterSingletonProxy.Props(
+    singletonManagerPath: "/user/jobmanager",
+    settings: ClusterSingletonProxySettings.Create(Context.System).WithRole("worker")),
+    name: "managerProxy");
+
+  _workerRouter = Context.ActorOf(new ClusterRouterPool(
+    local: new RandomPool(1), 
+    settings: new ClusterRouterPoolSettings(30, 1, true, "worker")
+    ).Props(Props.Create(() => new Worker(proxy))));
+```
