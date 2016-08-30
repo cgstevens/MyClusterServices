@@ -77,3 +77,6 @@ var proxy = Context.ActorOf(ClusterSingletonProxy.Props(
     settings: new ClusterRouterPoolSettings(30, 1, true, "worker")
     ).Props(Props.Create(() => new Worker(proxy))));
 ```
+
+###Example of a Singleton Cluster
+<img src="https://github.com/cgstevens/MyClusterServices/blob/master/Image/ClusterDiagram.png"/>
